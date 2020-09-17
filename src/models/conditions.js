@@ -12,7 +12,7 @@ module.exports = {
     });
   },
 
-  getConditionDetails: (id) => {
+  getConditionDetailsModel: (id) => {
     return new Promise((resolve, reject) => {
       const sql = query.getConditionDetails;
       connection.query(sql, id, (error, result) => {
@@ -22,7 +22,7 @@ module.exports = {
     });
   },
 
-  addConditions: (data) => {
+  addConditionsModel: (data) => {
     return new Promise((resolve, reject) => {
       const sql = query.addConditions;
       connection.query(sql, data, (error, result) => {
@@ -38,7 +38,7 @@ module.exports = {
     });
   },
 
-  updateConditions: (data, id) => {
+  updateConditionsModel: (data, id) => {
     return new Promise((resolve, reject) => {
       const sql = query.updateConditions;
       connection.query(sql, [data, id], (error, result) => {
@@ -53,7 +53,7 @@ module.exports = {
     });
   },
 
-  deleteConditions: (id) => {
+  deleteConditionsModel: (id) => {
     return new Promise((resolve, reject) => {
       const sql = query.deleteConditions;
       connection.query(sql, id, (error, result) => {
@@ -63,6 +63,8 @@ module.exports = {
           id,
           ...result,
         };
+
+        resolve(newData);
       });
     });
   },
