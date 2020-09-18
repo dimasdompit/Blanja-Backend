@@ -1,5 +1,8 @@
 const connection = require("../config/database");
-const { queryGetAllProducts } = require("../helpers/query/products");
+const {
+  queryGetAllProducts,
+  queryGetProductDetails,
+} = require("../helpers/query/products");
 
 module.exports = {
   getAllProductsModel: (search, sort, order, limit, page) => {
@@ -17,6 +20,17 @@ module.exports = {
           resolve(result);
         }
       );
+    });
+  },
+
+  getProductDetailsModel: (id) => {
+    return new Promise((resolve, reject) => {
+      const sql = queryGetProductDetails();
+
+      connection.query(sql, id, (error, result) => {
+        if (error) reject(error);
+        resolve(result);
+      });
     });
   },
 };
