@@ -1,3 +1,4 @@
+const auth = require("../middlewares/validation/auth");
 const products = require("../middlewares/validation/products");
 const conditions = require("../middlewares/validation/conditions");
 const categories = require("../middlewares/validation/categories");
@@ -5,6 +6,12 @@ const colors = require("../middlewares/validation/colors");
 const sizes = require("../middlewares/validation/sizes");
 
 module.exports = {
+  RegisterValidation: (data) => {
+    return auth.registerValidation.validate(data);
+  },
+  LoginValidation: (data) => {
+    return auth.loginValidation.validate(data);
+  },
   AddProductsValidation: (data) => {
     return products.addProductsValidation.validate(data);
   },
