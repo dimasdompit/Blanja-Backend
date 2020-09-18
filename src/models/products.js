@@ -57,9 +57,10 @@ module.exports = {
         if (error) reject(error);
 
         const newData = {
-          id: result.insertId,
+          // id: result.insertId,
           ...data,
         };
+        console.log(result);
         resolve(newData);
       });
     });

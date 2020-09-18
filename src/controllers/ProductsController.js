@@ -1,8 +1,15 @@
 const { response } = require("../helpers/response");
 const {
+  AddProductsValidation,
+  UpdateProductsValidation,
+} = require("../helpers/validation");
+const {
   totalProductsModel,
   getAllProductsModel,
   getProductDetailsModel,
+  addProductsModel,
+  updateProductsModel,
+  deleteProductsModel,
 } = require("../models/products");
 const fs = require("fs");
 
@@ -49,6 +56,33 @@ module.exports = {
         return response(res, true, result, 200);
       }
       return response(res, false, `Product with ID = ${id} Not Found`, 404);
+    } catch (error) {
+      console.log(error);
+      return response(res, false, "Internal Server Error", 500);
+    }
+  },
+
+  addProducts: async (req, res) => {
+    const data = req.body;
+
+    try {
+      if (req.files) {
+        const fileUploads = req.files.map((file) => {
+          return file["filename"];
+        });
+        data.image = `${fileUploads}`;
+      }
+      if (req.fileValidationError) {
+        return response(res, false, req.fileValidationError, 400);
+      }
+      const validation = AddProductsValidation(data);
+      if (validation.error === undefined) {
+        const result = await addProductsModel(data);
+        return response(res, true, result, 201);
+      }
+      let errorMsg = validation.error.details[0].message;
+      errorMsg = errorMsg.replace(/"/g, "");
+      return response(res, false, errorMsg, 401);
     } catch (error) {
       console.log(error);
       return response(res, false, "Internal Server Error", 500);
