@@ -88,4 +88,30 @@ module.exports = {
       return response(res, false, "Internal Server Error", 500);
     }
   },
+
+  updateProducts: async (req, res) => {
+    try {
+      const data = req.body;
+      const id = req.params.id;
+      let existImage = null;
+      if (req.files) {
+        const fileUploads = req.files.map((file, i) => {
+          return file["filename"];
+          // let splitImage = data.image.split(",");
+          // splitImage[i] = file["filename"];
+          // console.log(splitImage[i]);
+        });
+        data.image = `${fileUploads}`;
+        console.log(data.image);
+        let existData = await getProductDetailsModel(id);
+        existImage = existData[0].image;
+        console.log(existImage);
+      }
+      if (req.fileValidationError) {
+        return response(res, false, req.fileValidationError, 400);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  },
 };
