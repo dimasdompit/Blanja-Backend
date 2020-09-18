@@ -5,7 +5,7 @@ const {
 } = require("../helpers/validation");
 const {
   getAllSizesModel,
-  getSizesDetailsModel,
+  getSizeDetailsModel,
   addSizesModel,
   updateSizesModel,
   deleteSizesModel,
@@ -25,14 +25,14 @@ module.exports = {
     }
   },
 
-  getSizesDetails: async (req, res) => {
+  getSizeDetails: async (req, res) => {
     const id = req.params.id;
     try {
-      const result = await getSizesDetailsModel(id);
+      const result = await getSizeDetailsModel(id);
       if (result[0]) {
         return response(res, true, result, 200);
       }
-      return response(res, false, `Sizes with ID=${id} Not Found`, 404);
+      return response(res, false, `Size with ID=${id} Not Found`, 404);
     } catch (error) {
       console.log(error);
       return response(res, false, "Internal Server Error", 500);
@@ -81,7 +81,7 @@ module.exports = {
       if (result.affectedRows === 1) {
         return response(res, true, result, 200);
       }
-      return response(res, false, `Sizes with ID = ${id} Not Found`, 404);
+      return response(res, false, `Size with ID = ${id} Not Found`, 404);
     } catch (error) {
       console.log(error);
       return response(res, false, "Internal Server Error", 500);
