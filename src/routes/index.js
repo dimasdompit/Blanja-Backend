@@ -5,9 +5,9 @@ const conditionsRoute = require("./conditions");
 const categoriesRoute = require("./categories");
 const colorsRoute = require("./colors");
 
-router.use("/api/products", productRoute);
-router.use("/api/conditions", conditionsRoute);
-router.use("/api/categories", categoriesRoute);
-router.use("/api/colors", colorsRoute);
+router.use("/api/v1/products", productRoute);
+router.use("/api/v1/conditions", conditionsRoute);
+router.use("/api/v1/categories", categoriesRoute);
+router.use("/api/v1/colors", colorsRoute);
 
 module.exports = router;
