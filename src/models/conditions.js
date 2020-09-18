@@ -29,7 +29,7 @@ module.exports = {
         if (error) reject(error);
 
         const newData = {
-          id: result.id,
+          id: result.insertId,
           ...data,
         };
 
