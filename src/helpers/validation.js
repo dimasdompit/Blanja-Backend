@@ -1,6 +1,7 @@
 const conditions = require("../middlewares/validation/conditions");
 const categories = require("../middlewares/validation/categories");
 const colors = require("../middlewares/validation/colors");
+const sizes = require("../middlewares/validation/sizes");
 
 module.exports = {
   AddConditionsValidation: (data) => {
@@ -25,5 +26,13 @@ module.exports = {
 
   UpdateColorsValidation: (data) => {
     return colors.updateColorsValidation.validate(data);
+  },
+
+  AddSizesValidation: (data) => {
+    return sizes.addSizesValidation.validate(data);
+  },
+
+  UpdateSizesValidation: (data) => {
+    return sizes.updateSizesValidation.validate(data);
   },
 };
