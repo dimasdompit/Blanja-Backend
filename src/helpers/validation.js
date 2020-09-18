@@ -6,12 +6,21 @@ const colors = require("../middlewares/validation/colors");
 const sizes = require("../middlewares/validation/sizes");
 
 module.exports = {
+  // AUTH Validations
   RegisterValidation: (data) => {
     return auth.registerValidation.validate(data);
   },
   LoginValidation: (data) => {
     return auth.loginValidation.validate(data);
   },
+  forgotPassVal: (data) => {
+    return auth.forgotPassValidation.validate(data);
+  },
+  changePassVal: (data) => {
+    return auth.changePassValidation.validate(data);
+  },
+
+  // PRODUCTS Validations
   AddProductsValidation: (data) => {
     return products.addProductsValidation.validate(data);
   },
@@ -20,6 +29,7 @@ module.exports = {
     return products.updateProductsValidation.validate(data);
   },
 
+  // CONDITIONS Validations
   AddConditionsValidation: (data) => {
     return conditions.addConditionsValidation.validate(data);
   },
@@ -28,6 +38,7 @@ module.exports = {
     return conditions.updateConditionsValidation.validate(data);
   },
 
+  // CATEGORIES Validations
   AddCategoriesValidation: (data) => {
     return categories.addCategoriesValidation.validate(data);
   },
@@ -36,6 +47,7 @@ module.exports = {
     return categories.updateCategoriesValidation.validate(data);
   },
 
+  // COLORS Validations
   AddColorsValidation: (data) => {
     return colors.addColorsValidation.validate(data);
   },
@@ -44,6 +56,7 @@ module.exports = {
     return colors.updateColorsValidation.validate(data);
   },
 
+  // SIZES Validations
   AddSizesValidation: (data) => {
     return sizes.addSizesValidation.validate(data);
   },
