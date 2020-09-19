@@ -49,4 +49,26 @@ module.exports = {
       return response(res, false, "Internal Server Error", 500);
     }
   },
+
+  addAddress: async (req, res) => {
+    try {
+      const id = req.decoded.result[0].id;
+      const data = req.body;
+      data.user_id = id;
+      const validation = await AddAddressValidation(data);
+
+      if (validation.error === undefined) {
+        const result = await addAddressModel(data);
+        if (result) {
+          return response(res, true, result, 201);
+        }
+      }
+      let errorMessage = validate.error.details[0].message;
+      errorMessage = errorMessage.replace(/"/g, "");
+      return response(res, false, errorMessage, 400);
+    } catch (error) {
+      console.log(error);
+      return response(res, false, "Internal Server Error", 500);
+    }
+  },
 };
