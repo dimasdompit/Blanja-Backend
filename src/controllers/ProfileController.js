@@ -127,4 +127,30 @@ module.exports = {
       return response(res, false, "Internal Server Error", 500);
     }
   },
+
+  deleteMyAddress: async (req, res) => {
+    try {
+      const id = req.params.id;
+      if (id) {
+        const result = await getDetailMyAddressModel(id);
+        if (result.length === 1) {
+          const deleted = await deleteMyAddressModel(id);
+          if (deleted.affectedRows === 1) {
+            return response(
+              res,
+              true,
+              `Address with ID ${id} successfully deleted`,
+              200
+            );
+          }
+          return response(res, false, `Address failed to delete`, 400);
+        }
+        return response(res, false, `Address Not Found`, 404);
+      }
+      return response(res, false, "ID is Null", 400);
+    } catch (error) {
+      console.log(error);
+      return response(res, false, "Internal Server Error", 500);
+    }
+  },
 };
