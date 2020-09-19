@@ -115,7 +115,7 @@ module.exports = {
             code: data.code,
           };
           insertOTP(otp);
-          sendEmail("OTP Code", data);
+          sendEmail("OTP Code", { ...otp, name: getUser[0].name });
           return response(
             res,
             true,
