@@ -5,6 +5,9 @@ const schema = {
     name: joi.string().max(30).required(),
     email: joi.string().email({ minDomainSegments: 2 }).required(),
     password: joi.string().min(6).required(),
+    role: joi.number(),
+    store: joi.string(),
+    telp: joi.string(),
   }),
 
   loginValidation: joi.object({
