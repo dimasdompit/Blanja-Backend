@@ -96,4 +96,18 @@ module.exports = {
       return response(res, false, "Internal Server Error", 500);
     }
   },
+
+  getMyAddress: async (req, res) => {
+    try {
+      const id = req.decoded.result[0].id;
+      if (id) {
+        const result = await getMyAddressModel(id);
+        return response(res, true, result, 200);
+      }
+      return response(res, false, "Address Not Found", 404);
+    } catch (error) {
+      console.log(error);
+      return response(res, false, "Internal Server Error", 500);
+    }
+  },
 };
