@@ -136,13 +136,15 @@ module.exports = {
 
   ChangePassword: async (req, res) => {
     try {
-      const data = {
-        email: req.body.email,
-        password: hashSync(req.body.password, genSaltSync(1)),
-      };
+      // const data = {
+      //   email: req.body.email,
+      //   password: hashSync(req.body.password, genSaltSync(1)),
+      // };
+      const data = req.body;
       const validation = await changePassVal(data);
 
       if (validation.error === undefined) {
+        data.password = hashSync(req.body.password, genSaltSync(1));
         const result = await updateUser(data, data.email);
         console.log(result);
         return response(res, true, "Password successfully changed!", 200);
