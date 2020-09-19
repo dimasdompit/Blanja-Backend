@@ -38,7 +38,7 @@ module.exports = {
             fs.unlinkSync(`./src/images/users/${oldImage}`);
           return response(res, true, result, 200);
         }
-        let errorMessage = validate.error.details[0].message;
+        let errorMessage = validation.error.details[0].message;
         errorMessage = errorMessage.replace(/"/g, "");
         fs.unlinkSync(`./src/images/users/${data.image}`);
         return response(res, false, errorMessage, 400);
@@ -50,7 +50,7 @@ module.exports = {
     }
   },
 
-  addAddress: async (req, res) => {
+  addMyAddress: async (req, res) => {
     try {
       const id = req.decoded.result[0].id;
       const data = req.body;
@@ -63,7 +63,32 @@ module.exports = {
           return response(res, true, result, 201);
         }
       }
-      let errorMessage = validate.error.details[0].message;
+      let errorMessage = validation.error.details[0].message;
+      errorMessage = errorMessage.replace(/"/g, "");
+      return response(res, false, errorMessage, 400);
+    } catch (error) {
+      console.log(error);
+      return response(res, false, "Internal Server Error", 500);
+    }
+  },
+
+  editMyAddress: async (req, res) => {
+    try {
+      const id = req.params.id;
+      const data = req.body;
+      const validation = await EditAddressValidation(data);
+
+      if (validation.error === undefined) {
+        const checkData = await getDetailMyAddressModel(id);
+        if (checkData.length === 1) {
+          const result = await editAddressModel(data, id);
+          if (result) {
+            return response(res, true, result, 200);
+          }
+        }
+        return response(res, false, "Data Not Found", 404);
+      }
+      let errorMessage = validation.error.details[0].message;
       errorMessage = errorMessage.replace(/"/g, "");
       return response(res, false, errorMessage, 400);
     } catch (error) {

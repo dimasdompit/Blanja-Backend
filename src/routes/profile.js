@@ -1,10 +1,13 @@
 const express = require("express");
 const router = express.Router();
-const { editProfile, addAddress } = require("../controllers/ProfileController");
+const {
+  editProfile,
+  addMyAddress,
+} = require("../controllers/ProfileController");
 const tokenCheck = require("../middlewares/TokenCheck");
 const ImageFilter = require("../middlewares/ImageFilterUsers");
 
 router.put("/", tokenCheck, ImageFilter, editProfile);
-router.post("/my-address", tokenCheck, addAddress);
+router.post("/my-address", tokenCheck, addMyAddress);
 
 module.exports = router;
