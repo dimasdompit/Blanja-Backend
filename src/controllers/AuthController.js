@@ -133,4 +133,26 @@ module.exports = {
       return response(res, false, "Internal Server Error", 500);
     }
   },
+
+  ChangePassword: async (req, res) => {
+    try {
+      const data = {
+        email: req.body.email,
+        password: hashSync(req.body.password, genSaltSync(1)),
+      };
+      const validation = await changePassVal(data);
+
+      if (validation.error === undefined) {
+        const result = await updateUser(data, data.email);
+        console.log(result);
+        return response(res, true, "Password successfully changed!", 200);
+      }
+      let errorMsg = validation.error.details[0].message;
+      errorMsg = errorMsg.replace(/"/g, "");
+      return response(res, false, errorMsg, 400);
+    } catch (error) {
+      console.log(error);
+      return response(res, false, "Internal Server Error", 500);
+    }
+  },
 };

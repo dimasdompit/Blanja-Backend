@@ -29,11 +29,11 @@ module.exports = {
     });
   },
 
-  updateUser: (data, id) => {
+  updateUser: (data, email) => {
     return new Promise((resolve, reject) => {
       const sql = query.updateUser;
 
-      connection.query(sql, [data, id], (error, result) => {
+      connection.query(sql, [data, email], (error, result) => {
         if (error) reject(error);
         resolve(result);
       });
