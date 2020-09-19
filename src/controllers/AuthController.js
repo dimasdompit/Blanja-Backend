@@ -3,6 +3,7 @@ const { genSaltSync, hashSync, compareSync } = require("bcrypt");
 const {
   RegisterValidation,
   LoginValidation,
+  VerifyValidation,
   forgotPassVal,
   changePassVal,
 } = require("../helpers/validation");
@@ -61,6 +62,8 @@ module.exports = {
       return response(res, false, "Internal Server Error", 500);
     }
   },
+
+  Verification: async (req, res) => {},
 
   ForgotPassword: async (req, res) => {
     try {

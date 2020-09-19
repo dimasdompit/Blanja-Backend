@@ -15,6 +15,11 @@ const schema = {
     password: joi.string().required(),
   }),
 
+  verifyValidation: joi.object({
+    code: joi.string().min(6).max(6).required(),
+    email: joi.string().email({ minDomainSegments: 2 }).required(),
+  }),
+
   forgotPassValidation: joi.object({
     email: joi.string().email({ minDomainSegments: 2 }).required(),
   }),
