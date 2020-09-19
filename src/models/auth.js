@@ -39,4 +39,37 @@ module.exports = {
       });
     });
   },
+
+  insertOTP: (data) => {
+    return new Promise((resolve, reject) => {
+      const sql = query.sendOTP;
+
+      connection.query(sql, data, (error, result) => {
+        if (error) reject(error);
+        resolve(result);
+      });
+    });
+  },
+
+  checkOTP: (data) => {
+    return new Promise((resolve, reject) => {
+      const sql = query.checkOTP;
+
+      connection.query(sql, data, (error, result) => {
+        if (error) reject(error);
+        resolve(result);
+      });
+    });
+  },
+
+  deleteOTP: (data) => {
+    return new Promise((resolve, reject) => {
+      const sql = query.deleteOTP;
+
+      connection.query(sql, data, (error, result) => {
+        if (error) reject(error);
+        resolve(result);
+      });
+    });
+  },
 };

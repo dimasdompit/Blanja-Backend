@@ -5,5 +5,4 @@ module.exports = {
   sendOTP: `INSERT INTO otp SET ?`,
   checkOTP: "SELECT * FROM otp WHERE email = ?",
   deleteOTP: "DELETE FROM otp WHERE email = ?",
-  updateUser: "UPDATE users SET ? WHERE email=?",
 };
