@@ -104,7 +104,24 @@ module.exports = {
         const result = await getMyAddressModel(id);
         return response(res, true, result, 200);
       }
-      return response(res, false, "Address Not Found", 404);
+      return response(res, false, "ID is Null", 400);
+    } catch (error) {
+      console.log(error);
+      return response(res, false, "Internal Server Error", 500);
+    }
+  },
+
+  getDetailMyAddress: async (req, res) => {
+    try {
+      const id = req.params.id;
+      if (id) {
+        const result = await getDetailMyAddressModel(id);
+        if (result.length === 1) {
+          return response(res, true, result, 200);
+        }
+        return response(res, false, "Address Not Found", 404);
+      }
+      return response(res, false, "ID is Null", 400);
     } catch (error) {
       console.log(error);
       return response(res, false, "Internal Server Error", 500);
