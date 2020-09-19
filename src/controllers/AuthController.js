@@ -12,11 +12,10 @@ const {
   loginModel,
   updateUser,
   deleteOTP,
+  checkOTP,
+  insertOTP,
 } = require("../models/auth");
 const { sendEmail } = require("../helpers/sendEmail");
-const {
-  checkOTP,
-} = require("../../../../team-1/Glamour-Shop-API/src/helpers/query/auth");
 const encryptor = require("simple-encryptor")(`${process.env.ENCRYPT_KEY}`);
 
 module.exports = {
@@ -104,18 +103,19 @@ module.exports = {
 
   ForgotPassword: async (req, res) => {
     try {
-      const validation = forgotPassVal(req.body);
-
+      const data = req.body;
+      const validation = forgotPassVal(data);
       if (validation.error === undefined) {
-        const getUser = await loginModel(req.body.email);
+        const getUser = await loginModel(data.email);
         if (getUser.length === 1) {
-          const encrypted = encryptor.encrypt(getUser[0].email);
-          const data = {
+          //   const encrypted = encryptor.encrypt(getUser[0].email);
+          data.code = require("crypto").randomBytes(3).toString("hex");
+          const otp = {
             email: getUser[0].email,
-            name: getUser[0].name,
-            url: `${process.env.WEB_URL}/forgot-password/${encrypted}`,
+            code: data.code,
           };
-          sendEmail("Change Password", data);
+          insertOTP(otp);
+          sendEmail("OTP Code", data);
           return response(
             res,
             true,
