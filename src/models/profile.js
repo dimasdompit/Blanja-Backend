@@ -17,7 +17,7 @@ module.exports = {
     return new Promise((resolve, reject) => {
       const sql = query.getData;
 
-      connection(sql, id, (error, result) => {
+      connection.query(sql, id, (error, result) => {
         if (error) reject(error);
         resolve(result);
       });
@@ -54,7 +54,7 @@ module.exports = {
     return new Promise((resolve, reject) => {
       const sql = query.getMyAddress;
 
-      connection.query(sql, id, (error, result) => {
+      connection.query(sql, userId, (error, result) => {
         if (error) reject(error);
         resolve(result);
       });

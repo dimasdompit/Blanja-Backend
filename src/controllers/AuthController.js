@@ -16,6 +16,7 @@ const {
   insertOTP,
 } = require("../models/auth");
 const { sendEmail } = require("../helpers/sendEmail");
+const { createToken } = require("../helpers/createToken");
 const encryptor = require("simple-encryptor")(`${process.env.ENCRYPT_KEY}`);
 
 module.exports = {
@@ -55,6 +56,8 @@ module.exports = {
         if (emailCheck.length !== 0) {
           if (compareSync(data.password, emailCheck[0].password)) {
             delete emailCheck[0].password;
+            const token = createToken(emailCheck, process.env.TOKEN_KEY, "24h");
+            emailCheck[0].token = token;
             return response(res, true, emailCheck, 200);
           }
           return response(res, false, "Password Wrong", 400);

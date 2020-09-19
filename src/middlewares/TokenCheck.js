@@ -4,7 +4,7 @@ module.exports = (req, res, next) => {
   let token = null;
   try {
     token = req.headers.authorization;
-    const decode = jwt.verify(token, process.env.JWT_KEY);
+    const decode = jwt.verify(token, process.env.TOKEN_KEY);
     req.decoded = decode;
     next();
   } catch (error) {

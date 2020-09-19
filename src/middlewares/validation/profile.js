@@ -5,7 +5,7 @@ const schema = {
   editUserValidation: joi.object({
     name: joi.string().max(30),
     password: joi.string().min(6),
-    birthdat_date: joi
+    birthday_date: joi
       .date()
       .min(min)
       .message(`"date" cannot be earlier than ${min}`)
@@ -13,6 +13,8 @@ const schema = {
       .message(`"date" cannot be later than now`)
       .required(),
     image: joi.string(),
+    store: joi.string(),
+    telp: joi.string()
   }),
 
   addAddressValidation: joi.object({
