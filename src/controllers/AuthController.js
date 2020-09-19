@@ -7,8 +7,16 @@ const {
   forgotPassVal,
   changePassVal,
 } = require("../helpers/validation");
-const { registerModel, loginModel, updateUser } = require("../models/auth");
+const {
+  registerModel,
+  loginModel,
+  updateUser,
+  deleteOTP,
+} = require("../models/auth");
 const { sendEmail } = require("../helpers/sendEmail");
+const {
+  checkOTP,
+} = require("../../../../team-1/Glamour-Shop-API/src/helpers/query/auth");
 const encryptor = require("simple-encryptor")(`${process.env.ENCRYPT_KEY}`);
 
 module.exports = {
@@ -63,7 +71,36 @@ module.exports = {
     }
   },
 
-  Verification: async (req, res) => {},
+  Verification: async (req, res) => {
+    try {
+      const data = req.body;
+      const validation = VerifyValidation(data);
+
+      if (validation.error === undefined) {
+        const codeCheck = await checkOTP(data.email);
+        const emailCheck = await loginModel(data.email);
+        if (emailCheck.length !== 0) {
+          if (codeCheck.length !== 0) {
+            if (
+              data.code === codeCheck[0].code &&
+              data.email === codeCheck[0].email
+            ) {
+              await deleteOTP(data.email);
+              return response(res, true, "Verification Success", 200);
+            }
+            return response(res, false, "Code is wrong", 400);
+          }
+          return response(res, false, "Email is not Registered!", 400);
+        }
+      }
+      let errorMsg = validation.error.details[0].message;
+      errorMsg = errorMsg.replace(/"/g, "");
+      return response(res, false, errorMsg, 400);
+    } catch (error) {
+      console.log(error);
+      return response(res, false, "Internal Server Error", 500);
+    }
+  },
 
   ForgotPassword: async (req, res) => {
     try {
