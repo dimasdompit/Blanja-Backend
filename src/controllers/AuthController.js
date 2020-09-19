@@ -34,4 +34,29 @@ module.exports = {
       return response(res, false, "Internal Server Error", 500);
     }
   },
+
+  Login: async (req, res) => {
+    try {
+      const data = req.body;
+      const validation = await LoginValidation(data);
+
+      if (validation.error === undefined) {
+        const emailCheck = await loginModel(data.email);
+        if (emailCheck.length !== 0) {
+          if (compareSync(data.password, emailCheck[0].password)) {
+            delete emailCheck[0].password;
+            return response(res, true, emailCheck, 200);
+          }
+          return response(res, false, "Password Wrong", 400);
+        }
+        return response(res, false, "Emai is not registered!", 400);
+      }
+      let errorMsg = validation.error.details[0].message;
+      errorMsg = errorMsg.replace(/"/g, "");
+      return response(res, false, errorMsg, 400);
+    } catch (error) {
+      console.log(error);
+      return response(res, false, "Internal Server Error", 500);
+    }
+  },
 };
