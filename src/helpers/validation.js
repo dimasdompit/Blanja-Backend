@@ -1,4 +1,5 @@
 const auth = require("../middlewares/validation/auth");
+const profile = require("../middlewares/validation/profile");
 const products = require("../middlewares/validation/products");
 const conditions = require("../middlewares/validation/conditions");
 const categories = require("../middlewares/validation/categories");
@@ -23,6 +24,19 @@ module.exports = {
   },
   changePassVal: (data) => {
     return auth.changePassValidation.validate(data);
+  },
+
+  // PROFILE Validations
+  EditUserValidation: (data) => {
+    return profile.editUserValidation.validate(data);
+  },
+
+  AddAddressValidation: (data) => {
+    return profile.addAddressValidation.validate(data);
+  },
+
+  EditAddressValidation: (data) => {
+    return profile.editAddressValidation.validate(data);
   },
 
   // PRODUCTS Validations
