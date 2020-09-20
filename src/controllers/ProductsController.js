@@ -134,4 +134,21 @@ module.exports = {
       return response(res, false, "Internal Server Error", 500);
     }
   },
+
+  deleteProducts: async (req, res) => {
+    const id = req.params.id;
+    try {
+      const data = await getProductDetailsModel(id);
+      const result = await deleteProductsModel(id);
+      if (result.affectedRows === 1) {
+        const image = data[0].image;
+        fs.unlinkSync(`./src/images/products/${image}`);
+        return response(res, true, result, 200);
+      }
+      return response(res, false, `Data with ID = ${id} not found!`);
+    } catch (error) {
+      console.log(error);
+      return response(res, false, "Internal Server Error", 500);
+    }
+  },
 };
