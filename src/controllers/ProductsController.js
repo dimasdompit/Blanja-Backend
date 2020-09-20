@@ -64,13 +64,17 @@ module.exports = {
 
   addProducts: async (req, res) => {
     const data = req.body;
+    data.store = req.decoded.result[0].id;
 
     try {
-      if (req.files) {
-        const fileUploads = req.files.map((file) => {
-          return file["filename"];
-        });
-        data.image = `${fileUploads}`;
+      // if (req.files) {
+      //   const fileUploads = req.files.map((file) => {
+      //     return file["filename"];
+      //   });
+      //   data.image = `${fileUploads}`;
+      // }
+      if (req.file) {
+        data.image = req.file.filename;
       }
       if (req.fileValidationError) {
         return response(res, false, req.fileValidationError, 400);
@@ -94,24 +98,40 @@ module.exports = {
       const data = req.body;
       const id = req.params.id;
       let existImage = null;
-      if (req.files) {
-        const fileUploads = req.files.map((file, i) => {
-          return file["filename"];
-          // let splitImage = data.image.split(",");
-          // splitImage[i] = file["filename"];
-          // console.log(splitImage[i]);
-        });
-        data.image = `${fileUploads}`;
-        console.log(data.image);
+      // if (req.files) {
+      //   const fileUploads = req.files.map((file, i) => {
+      //     file = file["filename"];
+      //   });
+      // }
+      //   data.image = `${fileUploads}`;
+      if (req.file) {
+        const newImage = req.file.filename;
+        data.image = newImage;
         let existData = await getProductDetailsModel(id);
         existImage = existData[0].image;
-        console.log(existImage);
       }
       if (req.fileValidationError) {
         return response(res, false, req.fileValidationError, 400);
       }
+
+      const validation = UpdateProductsValidation(data);
+      if (validation.error === undefined) {
+        const result = await updateProductsModel(data, id);
+        if (result.id === id) {
+          if (existImage !== null) {
+            fs.unlinkSync(`./src/images/products/${existImage}`);
+          }
+          const newData = await getProductDetailsModel(id);
+          return response(res, true, newData, 200);
+        }
+        return response(res, false, `Product with ID = ${id} not found!`, 404);
+      }
+      let errorMsg = validation.error.details[0].message;
+      errorMsg = errorMsg.replace(/"/g, "");
+      return response(res, false, errorMsg, 401);
     } catch (error) {
       console.log(error);
+      return response(res, false, "Internal Server Error", 500);
     }
   },
 };
