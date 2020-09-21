@@ -51,7 +51,7 @@ npm / yarn start
 
 ## Documentation
 
-https://documenter.getpostman.com/view/9924773/T1LS9jMK
+https://documenter.getpostman.com/view/11068288/TVKBZyVX
 
 ## Contributing to Blanja-API
 
