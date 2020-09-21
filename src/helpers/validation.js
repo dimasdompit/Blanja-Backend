@@ -2,6 +2,7 @@ const auth = require("../middlewares/validation/auth");
 const profile = require("../middlewares/validation/profile");
 const products = require("../middlewares/validation/products");
 const transactions = require("../middlewares/validation/transactions");
+const banner = require("../middlewares/validation/banner");
 const conditions = require("../middlewares/validation/conditions");
 const categories = require("../middlewares/validation/categories");
 const colors = require("../middlewares/validation/colors");
@@ -52,6 +53,15 @@ module.exports = {
   // TRANSACTIONS Validations
   InsertTransactionValidation: (data) => {
     return transactions.insertTransactionValidation.validate(data);
+  },
+
+  // BANNER Validations
+  AddBannerValidation: (data) => {
+    return banner.addBannerValidation.validate(data);
+  },
+
+  UpdateBannerValidation: (data) => {
+    return banner.updateBannerValidation.validate(data);
   },
 
   // CONDITIONS Validations
