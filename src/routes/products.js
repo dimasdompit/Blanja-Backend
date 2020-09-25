@@ -3,6 +3,7 @@ const router = express.Router()
 const {
   getAllProducts,
   getProductDetails,
+  getProductsByUserId,
   addProducts,
   updateProducts,
   deleteProducts
@@ -13,6 +14,7 @@ const ImageFilter = require('../middlewares/ImageFilterProducts')
 
 router.get('/', getAllProducts)
 router.get('/:id', getProductDetails)
+router.get('/seller/:id', tokenCheck, checkRole, getProductsByUserId)
 router.post('/', tokenCheck, checkRole, ImageFilter, addProducts)
 router.put('/:id', tokenCheck, checkRole, ImageFilter, updateProducts)
 router.delete('/:id', tokenCheck, checkRole, deleteProducts)

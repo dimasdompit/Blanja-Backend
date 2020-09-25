@@ -7,6 +7,7 @@ const {
   totalProductsModel,
   getAllProductsModel,
   getProductDetailsModel,
+  getProductsByUserId,
   addProductsModel,
   updateProductsModel,
   deleteProductsModel
@@ -73,6 +74,26 @@ module.exports = {
         return response(res, true, 'Get Product Success', newResult, 200)
       }
       return response(res, false, `Product with ID = ${id} Not Found`, [], 404)
+    } catch (error) {
+      console.log(error)
+      return response(res, false, 'Internal Server Error', [], 500)
+    }
+  },
+
+  getProductsByUserId: async (req, res) => {
+    const id = parseInt(req.params.id)
+    const userId = req.decoded.result[0].id
+
+    try {
+      if (id === userId) {
+        const result = await getProductsByUserId(id)
+
+        if (result[0]) {
+          return response(res, true, 'Get Product By User ID Success', result, 200)
+        }
+        return response(res, false, `Product with ID = ${id} Not Found`, [], 404)
+      }
+      return response(res, false, 'Product Not Found', [], 404)
     } catch (error) {
       console.log(error)
       return response(res, false, 'Internal Server Error', [], 500)

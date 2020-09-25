@@ -2,6 +2,7 @@ const connection = require('../config/database')
 const {
   queryGetAllProducts,
   queryGetProductDetails,
+  queryGetProductsByUserId,
   queryAddProducts,
   queryUpdateProducts,
   queryDeleteProducts,
@@ -41,6 +42,17 @@ module.exports = {
   getProductDetailsModel: (id) => {
     return new Promise((resolve, reject) => {
       const sql = queryGetProductDetails()
+
+      connection.query(sql, id, (error, result) => {
+        if (error) reject(error)
+        resolve(result)
+      })
+    })
+  },
+
+  getProductsByUserId: (id) => {
+    return new Promise((resolve, reject) => {
+      const sql = queryGetProductsByUserId()
 
       connection.query(sql, id, (error, result) => {
         if (error) reject(error)
