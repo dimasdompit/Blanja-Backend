@@ -90,8 +90,6 @@ module.exports = {
 
       if (req.files) {
         req.files.map(async (file) => {
-          // console.log(file);
-          // console.log(file["filename"]);
           const dataImage = {
             product_id: productId,
             image: file.filename
@@ -106,14 +104,22 @@ module.exports = {
       const validation = AddProductsValidation(data)
       if (validation.error === undefined) {
         const getImage = await getProductImagesDetail(result.id)
-        const image = getImage[0].image
+        const images = getImage.map((file) => {
+          const filename = file.image
+          return filename
+        })
+
         const updateImageId = {
-          image: image,
-          ...result
+          image: getImage[0].image
         }
+
         await updateProductsModel(updateImageId, productId)
-        const newResult = await getProductDetailsModel(productId)
-        return response(res, true, 'Add Product Success', newResult[0], 201)
+        const newData = await getProductDetailsModel(productId)
+        const newResult = {
+          ...newData[0],
+          images: images
+        }
+        return response(res, true, 'Add Product Success', newResult, 201)
       }
       let errorMsg = validation.error.details[0].message
       errorMsg = errorMsg.replace(/"/g, '')
@@ -143,7 +149,7 @@ module.exports = {
         })
       }
       if (req.fileValidationError) {
-        return response(res, false, req.fileValidationError, 400)
+        return response(res, false, req.fileValidationError, [], 400)
       }
 
       const validation = UpdateProductsValidation(data)
@@ -156,10 +162,14 @@ module.exports = {
           }
           await updateProductsModel(imageProduct, id)
 
+          const images = newImagesData.map((file) => {
+            const filename = file.image
+            return filename
+          })
           const newData = await getProductDetailsModel(id)
           const newResult = {
             ...newData[0],
-            image: newImagesData[0].image
+            images: images
           }
           return response(res, true, 'Product Updated Successfully', newResult, 200)
         }
@@ -167,7 +177,7 @@ module.exports = {
       }
       let errorMsg = validation.error.details[0].message
       errorMsg = errorMsg.replace(/"/g, '')
-      return response(res, false, errorMsg, 401)
+      return response(res, false, errorMsg, [], 401)
     } catch (error) {
       console.log(error)
       return response(res, false, 'Internal Server Error', [], 500)
@@ -177,20 +187,23 @@ module.exports = {
   deleteProducts: async (req, res) => {
     const id = req.params.id
     try {
-      // const data = await getProductImagesDetail(id);
+      const data = await getProductImagesDetail(id)
+      data.map((img, i) => {
+        const image = img.image
+        fs.unlinkSync(`./src/images/products/${image}`)
+      })
       const result = await deleteProductsModel(id)
       await deleteProductImages(id)
       if (result.affectedRows === 1) {
-        // data.map((img, i) => {
-        //   const image = img.image
-        //   fs.unlinkSync(`.src/images/products/${image}`)
-        // })
-        return response(res, true, result, 200)
+        const newResult = {
+          id: result.id
+        }
+        return response(res, true, 'Product Has Been Successfully Removed', newResult, 200)
       }
-      return response(res, false, `Data with ID = ${id} not found!`)
+      return response(res, false, `Data with ID = ${id} not found!`, [], 404)
     } catch (error) {
       console.log(error)
-      return response(res, false, 'Internal Server Error', 500)
+      return response(res, false, 'Internal Server Error', [], 500)
     }
   }
 }

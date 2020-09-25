@@ -16,12 +16,12 @@ module.exports = {
     try {
       const result = await getAllColorsModel()
       if (result[0]) {
-        return response(res, true, result, 200)
+        return response(res, true, 'Get All Colors Success', result, 200)
       }
-      return response(res, false, 'Colors Not Found', 404)
+      return response(res, false, 'Colors Not Found', [], 404)
     } catch (error) {
       console.log(error)
-      return response(res, false, 'Internal Server Error', 500)
+      return response(res, false, 'Internal Server Error', [], 500)
     }
   },
 
@@ -30,12 +30,12 @@ module.exports = {
     try {
       const result = await getColorDetailsModel(id)
       if (result[0]) {
-        return response(res, true, result, 200)
+        return response(res, true, 'Get Color Details Success', result, 200)
       }
-      return response(res, false, `Colors with ID=${id} Not Found`, 404)
+      return response(res, false, `Colors with ID=${id} Not Found`, [], 404)
     } catch (error) {
       console.log(error)
-      return response(res, false, 'Internal Server Error', 500)
+      return response(res, false, 'Internal Server Error', [], 500)
     }
   },
 
@@ -45,14 +45,14 @@ module.exports = {
       const validation = AddColorsValidation(data)
       if (validation.error === undefined) {
         const result = await addColorsModel(data)
-        return response(res, true, result, 201)
+        return response(res, true, 'Add Color Success', result, 201)
       }
       let errorMsg = validation.error.details[0].message
       errorMsg = errorMsg.replace(/"/g, '')
-      return response(res, false, errorMsg, 400)
+      return response(res, false, errorMsg, [], 400)
     } catch (error) {
       console.log(error)
-      return response(res, false, 'Internal Server Error', 500)
+      return response(res, false, 'Internal Server Error', [], 500)
     }
   },
 
@@ -63,14 +63,14 @@ module.exports = {
       const validation = UpdateColorsValidation(data)
       if (validation.error === undefined) {
         const result = await updateColorsModel(data, id)
-        return response(res, true, result, 201)
+        return response(res, true, 'Color Updated Successfully', result, 201)
       }
       let errorMsg = validation.error.details[0].message
       errorMsg = errorMsg.replace(/"/g, '')
-      return response(res, false, errorMsg, 400)
+      return response(res, false, errorMsg, [], 400)
     } catch (error) {
       console.log(error)
-      return response(res, false, 'Internal Server Error', 500)
+      return response(res, false, 'Internal Server Error', [], 500)
     }
   },
 
@@ -79,12 +79,15 @@ module.exports = {
     try {
       const result = await deleteColorsModel(id)
       if (result.affectedRows === 1) {
-        return response(res, true, result, 200)
+        const newResult = {
+          id: result.id
+        }
+        return response(res, true, 'Color Has Been Successfully Removed', newResult, 200)
       }
-      return response(res, false, `Color with ID = ${id} Not Found`, 404)
+      return response(res, false, `Color with ID = ${id} Not Found`, [], 404)
     } catch (error) {
       console.log(error)
-      return response(res, false, 'Internal Server Error', 500)
+      return response(res, false, 'Internal Server Error', [], 500)
     }
   }
 }

@@ -34,16 +34,16 @@ module.exports = {
         if (checkEmail.length === 0) {
           const result = await registerModel(data)
           delete result.password
-          return response(res, true, result, 201)
+          return response(res, true, 'Register Success', result, 201)
         }
-        return response(res, false, 'Email has been registered!', 400)
+        return response(res, false, 'Email has been registered!', [], 400)
       }
       let errorMsg = validation.error.details[0].message
       errorMsg = errorMsg.replace(/"/g, '')
       return response(res, false, errorMsg, 400)
     } catch (error) {
       console.log(error)
-      return response(res, false, 'Internal Server Error', 500)
+      return response(res, false, 'Internal Server Error', [], 500)
     }
   },
 
@@ -65,18 +65,18 @@ module.exports = {
             )
             emailCheck[0].token = token
             emailCheck[0].refreshToken = refreshToken
-            return response(res, true, emailCheck, 200)
+            return response(res, true, 'Login Success', emailCheck[0], 200)
           }
-          return response(res, false, 'Password Wrong', 400)
+          return response(res, false, 'Password Wrong', [], 400)
         }
-        return response(res, false, 'Email is not registered!', 400)
+        return response(res, false, 'Email is not registered!', [], 400)
       }
       let errorMsg = validation.error.details[0].message
       errorMsg = errorMsg.replace(/"/g, '')
-      return response(res, false, errorMsg, 400)
+      return response(res, false, errorMsg, [], 400)
     } catch (error) {
       console.log(error)
-      return response(res, false, 'Internal Server Error', 500)
+      return response(res, false, 'Internal Server Error', [], 500)
     }
   },
 
@@ -101,15 +101,15 @@ module.exports = {
           token: token,
           refreshToken: RefreshToken
         }
-        return response(res, true, data, 200)
+        return response(res, true, 'Refresh Token Success', data, 200)
       }
-      return response(res, false, 'Token not found', 400)
+      return response(res, false, 'Token not found', [], 400)
     } catch (error) {
       console.log(error)
       if (error.message === 'invalid signature') {
-        return response(res, false, `${error.message}`, 400)
+        return response(res, false, `${error.message}`, [], 400)
       }
-      return response(res, false, 'Internal Server Error', 500)
+      return response(res, false, 'Internal Server Error', [], 500)
     }
   },
 
@@ -128,19 +128,19 @@ module.exports = {
               data.email === codeCheck[0].email
             ) {
               await deleteOTP(data.email)
-              return response(res, true, 'Verification Success', 200)
+              return response(res, true, 'Verification Success', [], 200)
             }
-            return response(res, false, 'Code is wrong', 400)
+            return response(res, false, 'Code is wrong', [], 400)
           }
-          return response(res, false, 'Email is not Registered!', 400)
+          return response(res, false, 'Email is not Registered!', [], 400)
         }
       }
       let errorMsg = validation.error.details[0].message
       errorMsg = errorMsg.replace(/"/g, '')
-      return response(res, false, errorMsg, 400)
+      return response(res, false, errorMsg, [], 400)
     } catch (error) {
       console.log(error)
-      return response(res, false, 'Internal Server Error', 500)
+      return response(res, false, 'Internal Server Error', [], 500)
     }
   },
 
@@ -163,17 +163,18 @@ module.exports = {
             res,
             true,
             'Please check your email to change password',
+            [],
             200
           )
         }
-        return response(res, false, 'Email is not registered!', 400)
+        return response(res, false, 'Email is not registered!', [], 400)
       }
       let errorMsg = validation.error.details[0].message
       errorMsg = errorMsg.replace(/"/g, '')
-      return response(res, false, errorMsg, 400)
+      return response(res, false, errorMsg, [], 400)
     } catch (error) {
       console.log(error)
-      return response(res, false, 'Internal Server Error', 500)
+      return response(res, false, 'Internal Server Error', [], 500)
     }
   },
 
@@ -190,14 +191,14 @@ module.exports = {
         data.password = hashSync(req.body.password, genSaltSync(1))
         const result = await updateUser(data, data.email)
         console.log(result)
-        return response(res, true, 'Password successfully changed!', 200)
+        return response(res, true, 'Password successfully changed!', [], 200)
       }
       let errorMsg = validation.error.details[0].message
       errorMsg = errorMsg.replace(/"/g, '')
-      return response(res, false, errorMsg, 400)
+      return response(res, false, errorMsg, [], 400)
     } catch (error) {
       console.log(error)
-      return response(res, false, 'Internal Server Error', 500)
+      return response(res, false, 'Internal Server Error', [], 500)
     }
   }
 }

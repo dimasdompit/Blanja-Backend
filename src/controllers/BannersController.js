@@ -18,12 +18,12 @@ module.exports = {
       const result = await getAllBannersModel()
 
       if (result[0]) {
-        return response(res, true, result, 200)
+        return response(res, true, 'Get All Banners Success', result, 200)
       }
-      return response(res, false, 'Banners not found!', 404)
+      return response(res, false, 'Banners not found!', [], 404)
     } catch (error) {
       console.log(error)
-      return response(res, false, 'Internal Server Error', 500)
+      return response(res, false, 'Internal Server Error', [], 500)
     }
   },
 
@@ -33,12 +33,12 @@ module.exports = {
       const result = await getBannerDetailsModel(id)
 
       if (result[0]) {
-        return response(res, true, result, 200)
+        return response(res, true, 'Get Banner Details Success', result, 200)
       }
-      return response(res, false, `Banner with ID = ${id} not found!`, 404)
+      return response(res, false, `Banner with ID = ${id} not found!`, [], 404)
     } catch (error) {
       console.log(error)
-      return response(res, false, 'Internal Server Error', 500)
+      return response(res, false, 'Internal Server Error', [], 500)
     }
   },
 
@@ -50,21 +50,21 @@ module.exports = {
         data.image = req.file.filename
       }
       if (req.fileValidationError) {
-        return response(res, false, req.fileValidationError, 400)
+        return response(res, false, req.fileValidationError, [], 400)
       }
 
       const validation = AddBannerValidation(data)
 
       if (validation.error === undefined) {
         const result = await addBannersModel(data)
-        return response(res, true, result, 201)
+        return response(res, true, 'Add Banner Success', result, 201)
       }
       let errorMsg = validation.error.details[0].message
       errorMsg = errorMsg.replace(/"/g, '')
-      return response(res, false, errorMsg, 400)
+      return response(res, false, errorMsg, [], 400)
     } catch (error) {
       console.log(error)
-      return response(res, false, 'Internal Server Error', 500)
+      return response(res, false, 'Internal Server Error', [], 500)
     }
   },
 
@@ -81,7 +81,7 @@ module.exports = {
         existImage = existData[0].image
       }
       if (req.fileValidationError) {
-        return response(res, false, req.fileValidationError, 400)
+        return response(res, false, req.fileValidationError, [], 400)
       }
 
       const validation = UpdateBannerValidation(data)
@@ -90,16 +90,16 @@ module.exports = {
         if (result.id === id) {
           if (existImage !== null) { fs.unlinkSync(`./src/images/banners/${existImage}`) }
           const newData = await getBannerDetailsModel(id)
-          return response(res, true, newData, 200)
+          return response(res, true, 'Banner Updated Successfully', newData, 200)
         }
-        return response(res, false, `Banner with ID = ${id} Not Found!`, 404)
+        return response(res, false, `Banner with ID = ${id} Not Found!`, [], 404)
       }
       let errorMsg = validation.error.details[0].message
       errorMsg = errorMsg.replace(/"/g, '')
-      return response(res, false, errorMsg, 400)
+      return response(res, false, errorMsg, [], 400)
     } catch (error) {
       console.log(error)
-      return response(res, false, 'Internal Server Error', 500)
+      return response(res, false, 'Internal Server Error', [], 500)
     }
   },
 
@@ -112,12 +112,15 @@ module.exports = {
       if (result.affectedRows === 1) {
         const image = data[0].image
         fs.unlinkSync(`./src/images/banners/${image}`)
-        return response(res, true, result, 200)
+        const newResult = {
+          id: result.id
+        }
+        return response(res, true, 'Banner Has Been Successfully Removed', newResult, 200)
       }
-      return response(res, false, `Banner with ID = ${id} Not Found!`, 404)
+      return response(res, false, `Banner with ID = ${id} Not Found!`, [], 404)
     } catch (error) {
       console.log(error)
-      return response(res, false, 'Internal Server Error', 500)
+      return response(res, false, 'Internal Server Error', [], 500)
     }
   }
 }

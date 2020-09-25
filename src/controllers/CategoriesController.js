@@ -17,12 +17,12 @@ module.exports = {
       const result = await getAllCategoriesModel()
 
       if (result[0]) {
-        return response(res, true, result, 200)
+        return response(res, true, 'Get All Categories Success', result, 200)
       }
-      return response(res, false, 'Sorry.. Categories Not Found', 404)
+      return response(res, false, 'Sorry.. Categories Not Found', [], 404)
     } catch (error) {
       console.log(error)
-      return response(res, false, 'Internal Server Error', 500)
+      return response(res, false, 'Internal Server Error', [], 500)
     }
   },
 
@@ -32,12 +32,12 @@ module.exports = {
       const result = await getCategoriesDetailsModel(id)
 
       if (result[0]) {
-        return response(res, true, result, 200)
+        return response(res, true, 'Get Category Details Success', result, 200)
       }
-      return response(res, false, `Categories with ID = ${id} Not Found`, 404)
+      return response(res, false, `Categories with ID = ${id} Not Found`, [], 404)
     } catch (error) {
       console.log(error)
-      return response(res, false, 'Internal Server Error', 500)
+      return response(res, false, 'Internal Server Error', [], 500)
     }
   },
 
@@ -48,15 +48,15 @@ module.exports = {
 
       if (validation.error === undefined) {
         const result = await addCategoriesModel(data)
-        return response(res, true, result, 201)
+        return response(res, true, 'Add Category Success', result, 201)
       }
 
       let errorMsg = validation.error.details[0].message
       errorMsg = errorMsg.replace(/"/g, '')
-      return response(res, false, errorMsg, 400)
+      return response(res, false, errorMsg, [], 400)
     } catch (error) {
       console.log(error)
-      return response(res, false, 'Internal Server Error', 500)
+      return response(res, false, 'Internal Server Error', [], 500)
     }
   },
 
@@ -68,15 +68,15 @@ module.exports = {
 
       if (validation.error === undefined) {
         const result = await updateCategoriesModel(data, id)
-        return response(res, true, result, 200)
+        return response(res, true, 'Product Updated Successfully', result, 200)
       }
 
       let errorMsg = validation.error.details[0].message
       errorMsg = errorMsg.replace(/"/g, '')
-      return response(res, false, errorMsg, 400)
+      return response(res, false, errorMsg, [], 400)
     } catch (error) {
       console.log(error)
-      return response(res, false, 'Internal Server Error', 500)
+      return response(res, false, 'Internal Server Error', [], 500)
     }
   },
 
@@ -86,12 +86,15 @@ module.exports = {
       const result = await deleteCategoriesModel(id)
 
       if (result.affectedRows === 1) {
-        return response(res, true, result, 200)
+        const newResult = {
+          id: result.id
+        }
+        return response(res, true, 'Category Has Been Successfully Removed', newResult, 200)
       }
-      return response(res, false, `Categories with ID = ${id} Not Found`, 404)
+      return response(res, false, `Categories with ID = ${id} Not Found`, [], 404)
     } catch (error) {
       console.log(error)
-      return response(res, false, 'Internal Server Error', 500)
+      return response(res, false, 'Internal Server Error', [], 500)
     }
   }
 }

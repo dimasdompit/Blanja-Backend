@@ -20,7 +20,6 @@ module.exports = {
         shipping_address: parseInt(req.body.address),
         user_id: userId
       }
-      console.log(data)
 
       const validation = InsertTransactionValidation(data)
       if (validation.error === undefined) {
@@ -36,24 +35,24 @@ module.exports = {
           await insertTransactionDetailsModel(data)
         })
         inserted.items = dummy
-        return response(res, true, inserted, 200)
+        return response(res, true, 'Transaction Success', inserted, 200)
       }
       let errorMessage = validation.error.details[0].message
       errorMessage = errorMessage.replace(/"/g, '')
-      return response(res, false, errorMessage, 400)
+      return response(res, false, errorMessage, [], 400)
     } catch (error) {
       console.log(error)
-      return response(res, false, 'Internal Server Error', 500)
+      return response(res, false, 'Internal Server Error', [], 500)
     }
   },
 
   getAllTransactions: async (req, res) => {
     try {
       const result = await getAllTransactionsModel()
-      return response(res, true, result, 200)
+      return response(res, true, 'Get All Transactions Success', result, 200)
     } catch (error) {
       console.log(error)
-      return response(res, false, 'Internal Server Error', 500)
+      return response(res, false, 'Internal Server Error', [], 500)
     }
   },
 
@@ -62,12 +61,12 @@ module.exports = {
       const id = req.decoded.result[0].id
       const result = await getMyTransactionsModel(id)
       if (result.length !== 0) {
-        return response(res, true, result, 200)
+        return response(res, true, 'Get My Transactions Success', result, 200)
       }
-      return response(res, false, 'Transactions Not Found', 404)
+      return response(res, false, 'Transactions Not Found', [], 404)
     } catch (error) {
       console.log(error)
-      return response(res, false, 'Internal Server Error', 500)
+      return response(res, false, 'Internal Server Error', [], 500)
     }
   },
 
@@ -76,12 +75,12 @@ module.exports = {
       const id = req.params.id
       const result = await getTransactionDetailsModel(id)
       if (result.length !== 0) {
-        return response(res, true, result, 200)
+        return response(res, true, 'Get Transaction Details Success', result, 200)
       }
-      return response(res, false, `Transaction with ID = ${id} not found`, 404)
+      return response(res, false, `Transaction with ID = ${id} not found`, [], 404)
     } catch (error) {
       console.log(error)
-      return response(res, false, 'Internal Server Error', 500)
+      return response(res, false, 'Internal Server Error', [], 500)
     }
   }
 }
