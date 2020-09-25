@@ -1,154 +1,206 @@
-const { response } = require("../helpers/response");
+const { response } = require('../helpers/response')
 const {
   AddProductsValidation,
-  UpdateProductsValidation,
-} = require("../helpers/validation");
+  UpdateProductsValidation
+} = require('../helpers/validation')
 const {
   totalProductsModel,
   getAllProductsModel,
   getProductDetailsModel,
   addProductsModel,
   updateProductsModel,
-  deleteProductsModel,
-} = require("../models/products");
-const fs = require("fs");
+  deleteProductsModel
+} = require('../models/products')
+const {
+  // getAllProductImagesModel,
+  getProductImagesDetail,
+  insertProductImages,
+  // updateProductImages,
+  deleteProductImages
+} = require('../models/product_images')
+// const fs = require('fs')
 
 module.exports = {
   getAllProducts: async (req, res) => {
-    const totalProducts = await totalProductsModel();
+    const totalProducts = await totalProductsModel()
     const spreadData = {
-      ...totalProducts,
-    };
-    const totalData = spreadData["COUNT(*)"];
+      ...totalProducts
+    }
+    const totalData = spreadData['COUNT(*)']
 
-    let search = req.query.search || "";
-    let sort = req.query.sort || "created_at";
-    let order = req.query.order || "DESC";
-    let limit = parseInt(req.query.limit) || 10;
-    let page = parseInt(req.query.page) || 1;
+    const search = req.query.search || ''
+    const sort = req.query.sort || 'created_at'
+    const order = req.query.order || 'DESC'
+    const limit = parseInt(req.query.limit) || 10
+    const page = parseInt(req.query.page) || 1
 
     try {
-      const result = await getAllProductsModel(
+      const results = await getAllProductsModel(
         search,
         sort,
         order,
         limit,
         page
-      );
+      )
 
-      if (result[0]) {
-        return response(res, true, result, 200, { totalData, page, limit });
+      // const newResult = results.map(async (result, i) => {
+      //   console.log(result);
+      // await getProductImagesDetail(result.id)
+      //   .then((res) => {
+      //     const spread = {
+      //       ...res[i],
+      //     };
+      //     return spread.image;
+      //   })
+      //   .catch((err) => console.log(err));
+      // console.log(productImages[0]);
+      // const spread = {
+      //   ...productImages[i],
+      // };
+      // const newImage = spread.image;
+      // console.log(newImage);
+      // });
+      // newResult.then((res) => console.log(res));
+
+      // const newResult = {
+      //   ...result,
+      //   image,
+      // };
+
+      if (results[0]) {
+        return response(res, true, 'Get All Products Success', results, 200, { totalData, page, limit })
       }
-      return response(res, false, "Sorry.. Products Not Found", 404);
+      return response(res, false, 'Sorry.. Products Not Found', 404)
     } catch (error) {
-      console.log(error);
-      return response(res, false, "Internal Server Error", 500);
+      console.log(error)
+      return response(res, false, 'Internal Server Error', 500)
     }
   },
 
   getProductDetails: async (req, res) => {
-    const id = req.params.id;
+    const id = req.params.id
 
     try {
-      const result = await getProductDetailsModel(id);
+      const result = await getProductDetailsModel(id)
+      console.log(result)
 
       if (result[0]) {
-        return response(res, true, result, 200);
+        const productImages = await getProductImagesDetail(result[0].id)
+        const image = productImages.map((file) => {
+          const filename = file.image
+          return filename
+        })
+
+        const newResult = {
+          ...result[0],
+          images: image
+        }
+        return response(res, true, 'Get Product Success', newResult, 200)
       }
-      return response(res, false, `Product with ID = ${id} Not Found`, 404);
+      return response(res, false, `Product with ID = ${id} Not Found`, result, 404)
     } catch (error) {
-      console.log(error);
-      return response(res, false, "Internal Server Error", 500);
+      console.log(error)
+      return response(res, false, 'Internal Server Error', result, 500)
     }
   },
 
   addProducts: async (req, res) => {
-    const data = req.body;
-    data.store = req.decoded.result[0].id;
+    const data = req.body
+    const userId = req.decoded.result[0].id
+    data.store = userId
 
     try {
-      // if (req.files) {
-      //   const fileUploads = req.files.map((file) => {
-      //     return file["filename"];
-      //   });
-      //   data.image = `${fileUploads}`;
-      // }
-      if (req.file) {
-        data.image = req.file.filename;
+      const result = await addProductsModel(data)
+      const productId = result.id
+
+      if (req.files) {
+        req.files.map(async (file) => {
+          // console.log(file);
+          // console.log(file["filename"]);
+          const dataImage = {
+            product_id: productId,
+            image: file.filename
+          }
+          await insertProductImages(dataImage)
+        })
       }
       if (req.fileValidationError) {
-        return response(res, false, req.fileValidationError, 400);
+        return response(res, false, req.fileValidationError, 400)
       }
-      const validation = AddProductsValidation(data);
+
+      const validation = AddProductsValidation(data)
       if (validation.error === undefined) {
-        const result = await addProductsModel(data);
-        return response(res, true, result, 201);
+        const getImage = await getProductImagesDetail(result.id)
+        const image = getImage[0].image
+        const updateImageId = {
+          image: image,
+          ...result
+        }
+        const newResult = await updateProductsModel(updateImageId, productId)
+        return response(res, true, 'Add Product Success', newResult, 201)
       }
-      let errorMsg = validation.error.details[0].message;
-      errorMsg = errorMsg.replace(/"/g, "");
-      return response(res, false, errorMsg, 401);
+      let errorMsg = validation.error.details[0].message
+      errorMsg = errorMsg.replace(/"/g, '')
+      return response(res, false, errorMsg, 401)
     } catch (error) {
-      console.log(error);
-      return response(res, false, "Internal Server Error", 500);
+      console.log(error)
+      return response(res, false, 'Internal Server Error', 500)
     }
   },
 
   updateProducts: async (req, res) => {
     try {
-      const data = req.body;
-      const id = req.params.id;
-      let existImage = null;
-      // if (req.files) {
-      //   const fileUploads = req.files.map((file, i) => {
-      //     file = file["filename"];
-      //   });
+      const data = req.body
+      const id = req.params.id
+      // let existImage = null;
+      // if (req.file) {
+      //   const newImage = req.file.filename;
+      //   data.image = newImage;
+      //   let existData = await getProductDetailsModel(id);
+      //   existImage = existData[0].image;
       // }
-      //   data.image = `${fileUploads}`;
-      if (req.file) {
-        const newImage = req.file.filename;
-        data.image = newImage;
-        let existData = await getProductDetailsModel(id);
-        existImage = existData[0].image;
-      }
       if (req.fileValidationError) {
-        return response(res, false, req.fileValidationError, 400);
+        return response(res, false, req.fileValidationError, 400)
       }
 
-      const validation = UpdateProductsValidation(data);
+      const validation = UpdateProductsValidation(data)
       if (validation.error === undefined) {
-        const result = await updateProductsModel(data, id);
+        const result = await updateProductsModel(data, id)
         if (result.id === id) {
-          if (existImage !== null) {
-            fs.unlinkSync(`./src/images/products/${existImage}`);
-          }
-          const newData = await getProductDetailsModel(id);
-          return response(res, true, newData, 200);
+          // if (existImage !== null) {
+          //   fs.unlinkSync(`./src/images/products/${existImage}`);
+          // }
+          // const newData = await getProductDetailsModel(id)
+          return response(res, true, result, 200)
         }
-        return response(res, false, `Product with ID = ${id} not found!`, 404);
+        return response(res, false, `Product with ID = ${id} not found!`, 404)
       }
-      let errorMsg = validation.error.details[0].message;
-      errorMsg = errorMsg.replace(/"/g, "");
-      return response(res, false, errorMsg, 401);
+      let errorMsg = validation.error.details[0].message
+      errorMsg = errorMsg.replace(/"/g, '')
+      return response(res, false, errorMsg, 401)
     } catch (error) {
-      console.log(error);
-      return response(res, false, "Internal Server Error", 500);
+      console.log(error)
+      return response(res, false, 'Internal Server Error', 500)
     }
   },
 
   deleteProducts: async (req, res) => {
-    const id = req.params.id;
+    const id = req.params.id
     try {
-      const data = await getProductDetailsModel(id);
-      const result = await deleteProductsModel(id);
+      // const data = await getProductImagesDetail(id);
+      const result = await deleteProductsModel(id)
+      await deleteProductImages(id)
       if (result.affectedRows === 1) {
-        const image = data[0].image;
-        fs.unlinkSync(`./src/images/products/${image}`);
-        return response(res, true, result, 200);
+        // data.map((img, i) => {
+        //   const image = img.image
+        //   fs.unlinkSync(`.src/images/products/${image}`)
+        // })
+        return response(res, true, result, 200)
       }
-      return response(res, false, `Data with ID = ${id} not found!`);
+      return response(res, false, `Data with ID = ${id} not found!`)
     } catch (error) {
-      console.log(error);
-      return response(res, false, "Internal Server Error", 500);
+      console.log(error)
+      return response(res, false, 'Internal Server Error', 500)
     }
-  },
-};
+  }
+}

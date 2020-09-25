@@ -1,11 +1,11 @@
-const jwt = require("jsonwebtoken");
+const jwt = require('jsonwebtoken')
 
 module.exports = {
   createToken: (result, key, expired) => {
     const token = jwt.sign({ result: result }, key, {
-      expiresIn: expired,
-    });
+      expiresIn: expired
+    })
 
-    return token;
-  },
-};
+    return token
+  }
+}

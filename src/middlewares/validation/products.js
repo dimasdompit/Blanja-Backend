@@ -4,7 +4,7 @@ const schema = {
   addProductsValidation: joi.object({
     product_name: joi.string().required(),
     store: joi.number().required(),
-    image: joi.string().required(),
+    // image: joi.number().required(),
     description: joi.string().required(),
     stock: joi.number().required(),
     price: joi.number().required(),
@@ -16,7 +16,7 @@ const schema = {
 
   updateProductsValidation: joi.object({
     product_name: joi.string().required(),
-    image: joi.string().required(),
+    // image: joi.number().required(),
     description: joi.string().required(),
     stock: joi.number().required(),
     price: joi.number().required(),

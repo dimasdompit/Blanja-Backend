@@ -1,71 +1,71 @@
-const connection = require("../config/database");
-const query = require("../helpers/query/conditions");
+const connection = require('../config/database')
+const query = require('../helpers/query/conditions')
 
 module.exports = {
   getAllConditionsModel: () => {
     return new Promise((resolve, reject) => {
-      const sql = query.getAllConditions;
+      const sql = query.getAllConditions
       connection.query(sql, (error, result) => {
-        if (error) reject(error);
-        resolve(result);
-      });
-    });
+        if (error) reject(error)
+        resolve(result)
+      })
+    })
   },
 
   getConditionDetailsModel: (id) => {
     return new Promise((resolve, reject) => {
-      const sql = query.getConditionDetails;
+      const sql = query.getConditionDetails
       connection.query(sql, id, (error, result) => {
-        if (error) reject(error);
-        resolve(result);
-      });
-    });
+        if (error) reject(error)
+        resolve(result)
+      })
+    })
   },
 
   addConditionsModel: (data) => {
     return new Promise((resolve, reject) => {
-      const sql = query.addConditions;
+      const sql = query.addConditions
       connection.query(sql, data, (error, result) => {
-        if (error) reject(error);
+        if (error) reject(error)
 
         const newData = {
           id: result.insertId,
-          ...data,
-        };
+          ...data
+        }
 
-        resolve(newData);
-      });
-    });
+        resolve(newData)
+      })
+    })
   },
 
   updateConditionsModel: (data, id) => {
     return new Promise((resolve, reject) => {
-      const sql = query.updateConditions;
+      const sql = query.updateConditions
       connection.query(sql, [data, id], (error, result) => {
-        if (error) reject(error);
+        if (error) reject(error)
 
         const newData = {
           id,
-          ...data,
-        };
-        resolve(newData);
-      });
-    });
+          ...data
+        }
+        resolve(newData)
+      })
+    })
   },
 
   deleteConditionsModel: (id) => {
     return new Promise((resolve, reject) => {
-      const sql = query.deleteConditions;
+      const sql = query.deleteConditions
       connection.query(sql, id, (error, result) => {
-        if (error) reject(error);
+        if (error) reject(error)
 
         const newData = {
           id,
-          ...result,
-        };
+          ...result
+        }
 
-        resolve(newData);
-      });
-    });
-  },
-};
+        resolve(newData)
+      })
+    })
+  }
+}

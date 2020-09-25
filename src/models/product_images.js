@@ -1,10 +1,11 @@
 const connection = require('../config/database')
-const query = require('../helpers/query/sizes')
+const query = require('../helpers/query/product_images')
 
 module.exports = {
-  getAllSizesModel: () => {
+  getAllProductImagesModel: () => {
     return new Promise((resolve, reject) => {
-      const sql = query.getAllSizes
+      const sql = query.getAllProductImages
+
       connection.query(sql, (error, result) => {
         if (error) reject(error)
         resolve(result)
@@ -12,19 +13,21 @@ module.exports = {
     })
   },
 
-  getSizeDetailsModel: (id) => {
+  getProductImagesDetail: (productId) => {
     return new Promise((resolve, reject) => {
-      const sql = query.getSizeDetails
-      connection.query(sql, id, (error, result) => {
+      const sql = query.getProductImagesDetail
+
+      connection.query(sql, productId, (error, result) => {
         if (error) reject(error)
         resolve(result)
       })
     })
   },
 
-  addSizesModel: (data) => {
+  insertProductImages: (data) => {
     return new Promise((resolve, reject) => {
-      const sql = query.addSizes
+      const sql = query.insertProductImages
+
       connection.query(sql, data, (error, result) => {
         if (error) reject(error)
 
@@ -32,20 +35,20 @@ module.exports = {
           id: result.insertId,
           ...data
         }
-
         resolve(newData)
       })
     })
   },
 
-  updateSizesModel: (data, id) => {
+  updateProductImages: (data, productId) => {
     return new Promise((resolve, reject) => {
-      const sql = query.updateSizes
-      connection.query(sql, [data, id], (error, result) => {
+      const sql = query.updateProductImages
+
+      connection.query(sql, [data, productId], (error, result) => {
         if (error) reject(error)
 
         const newData = {
-          id,
+          productId,
           ...data
         }
         resolve(newData)
@@ -53,17 +56,17 @@ module.exports = {
     })
   },
 
-  deleteSizesModel: (id) => {
+  deleteProductImages: (productId) => {
     return new Promise((resolve, reject) => {
-      const sql = query.deleteSizes
-      connection.query(sql, id, (error, result) => {
+      const sql = query.deleteProductImages
+
+      connection.query(sql, productId, (error, result) => {
         if (error) reject(error)
 
         const newData = {
-          id,
+          productId,
           ...result
         }
-
         resolve(newData)
       })
     })
