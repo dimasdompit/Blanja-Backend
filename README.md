@@ -9,7 +9,7 @@
 
 Project name is a Blanja-API
 
-Blanja-API is API for E-Commerce App
+Blanja-API is a RESTful API for E-Commerce App
 
 ## Built with
 
@@ -23,7 +23,8 @@ Blanja-API is API for E-Commerce App
 - Authentication & Authorization with JWT
 - Create, Read, Update & Delete (CRUD)
 - Search, Sort & Pagination
-- Buy products
+- Multiple Image Upload
+- Product Transactions/Order
 - Allowed CORS
 - and many features to be made/coming soon
 - etc
