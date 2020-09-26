@@ -15,6 +15,7 @@ const {
   deleteMyAddressModel
 } = require('../models/profile')
 const fs = require('fs')
+// const today = require('')
 
 module.exports = {
   editProfile: async (req, res) => {
@@ -35,7 +36,10 @@ module.exports = {
         if (validation.error === undefined) {
           const result = await editUserModel(data, id)
           if (result.affectedRows === 1 && oldImage !== 'user-default.png') { fs.unlinkSync(`./src/images/users/${oldImage}`) }
-          return response(res, true, 'Edit Profile Success', result, 200)
+          const newData = await getUserModel(id)
+          delete newData[0].password
+          const newResult = newData[0]
+          return response(res, true, 'Edit Profile Success', newResult, 200)
         }
         let errorMessage = validation.error.details[0].message
         errorMessage = errorMessage.replace(/"/g, '')
@@ -116,7 +120,7 @@ module.exports = {
       if (id) {
         const result = await getDetailMyAddressModel(id)
         if (result.length === 1) {
-          return response(res, true, 'Get Details My Address Success', result, 200)
+          return response(res, true, 'Get Details My Address Success', result[0], 200)
         }
         return response(res, false, 'Address Not Found', [], 404)
       }
@@ -142,7 +146,7 @@ module.exports = {
               res,
               true,
               `Address with ID ${id} successfully deleted`,
-              newResult.id,
+              newResult,
               200
             )
           }

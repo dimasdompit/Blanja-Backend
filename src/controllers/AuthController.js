@@ -40,7 +40,7 @@ module.exports = {
       }
       let errorMsg = validation.error.details[0].message
       errorMsg = errorMsg.replace(/"/g, '')
-      return response(res, false, errorMsg, 400)
+      return response(res, false, errorMsg, [], 400)
     } catch (error) {
       console.log(error)
       return response(res, false, 'Internal Server Error', [], 500)

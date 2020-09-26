@@ -7,7 +7,7 @@ module.exports = (req, res, next) => {
   try {
     ImageFilter(req, res, (error) => {
       if (error) {
-        return response(res, false, `${error.message} max 4 mb`, 400)
+        return response(res, false, `${error.message} max 4 mb`, [], 400)
       }
       next()
     })
