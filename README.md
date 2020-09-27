@@ -45,9 +45,24 @@ To install Blanja API, follow these steps
 
 ```
 clone this repository
-npm / yarn install
+import blanja-api SQL in directory "database" to your phpmyadmin
 cd Blanja-Backend
+npm / yarn install
 npm / yarn start
+```
+
+#### Create .env file in the directory, and then add this :
+```
+APP_PORT=your-port
+MYSQL_HOST=your-host-mysql
+MYSQL_USER=your-user-mysql
+MYSQL_PASSWORD=your-password-mysql
+MYSQL_DATABASE=your-database-name
+USER_EMAIL=your-email
+PASS_EMAIL=your-password-email
+ENCRYPT_KEY=your-secret-encrypt-key
+TOKEN_KEY=your-secret-token-key
+REFRESHTOKEN_KEY=your-secret-refreshtoken-key
 ```
 
 ## Documentation
