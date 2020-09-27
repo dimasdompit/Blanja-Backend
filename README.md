@@ -53,6 +53,7 @@ npm / yarn start
 
 #### Create .env file in the directory, and then add this :
 
+```
 APP_PORT=*your-port*
 MYSQL_HOST=*your-host-mysql*
 MYSQL_USER=*your-user-mysql*
@@ -63,6 +64,7 @@ PASS_EMAIL=*your-password-email*
 ENCRYPT_KEY=*your-secret-encrypt-key*
 TOKEN_KEY=*your-secret-token-key*
 REFRESHTOKEN_KEY=*your-secret-refreshtoken-key*
+```
 
 ## Documentation
 
