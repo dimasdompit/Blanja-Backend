@@ -32,7 +32,7 @@ module.exports = {
       const result = await getCategoriesDetailsModel(id)
 
       if (result[0]) {
-        return response(res, true, 'Get Category Details Success', result, 200)
+        return response(res, true, 'Get Category Details Success', result[0], 200)
       }
       return response(res, false, `Categories with ID = ${id} Not Found`, [], 404)
     } catch (error) {

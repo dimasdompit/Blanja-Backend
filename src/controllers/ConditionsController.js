@@ -30,7 +30,7 @@ module.exports = {
     try {
       const result = await getConditionDetailsModel(id)
       if (result[0]) {
-        return response(res, true, 'Get Condition Details Success', result, 200)
+        return response(res, true, 'Get Condition Details Success', result[0], 200)
       }
       return response(res, false, `Conditions with ID=${id} Not Found`, [], 404)
     } catch (error) {

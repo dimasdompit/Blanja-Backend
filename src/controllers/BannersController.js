@@ -33,7 +33,7 @@ module.exports = {
       const result = await getBannerDetailsModel(id)
 
       if (result[0]) {
-        return response(res, true, 'Get Banner Details Success', result, 200)
+        return response(res, true, 'Get Banner Details Success', result[0], 200)
       }
       return response(res, false, `Banner with ID = ${id} not found!`, [], 404)
     } catch (error) {

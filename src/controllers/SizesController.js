@@ -30,7 +30,7 @@ module.exports = {
     try {
       const result = await getSizeDetailsModel(id)
       if (result[0]) {
-        return response(res, true, 'Get Size Details Success', result, 200)
+        return response(res, true, 'Get Size Details Success', result[0], 200)
       }
       return response(res, false, `Size with ID=${id} Not Found`, [], 404)
     } catch (error) {
