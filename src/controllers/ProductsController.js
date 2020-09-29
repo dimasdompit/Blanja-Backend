@@ -35,6 +35,10 @@ module.exports = {
     const limit = parseInt(req.query.limit) || 10
     const page = parseInt(req.query.page) || 1
 
+    const totalPage = Math.ceil(totalData / limit)
+    const nextPage = (page + 1) <= totalPage ? (page + 1) : null
+    const previousPage = (page - 1) > 0 ? (page - 1) : null
+
     try {
       const results = await getAllProductsModel(
         search,
@@ -44,8 +48,17 @@ module.exports = {
         page
       )
 
+      const pagination = {
+        page: page,
+        limit: limit,
+        totalData: totalData,
+        totalPage: totalPage,
+        nextPage: nextPage,
+        previousPage: previousPage
+      }
+
       if (results[0]) {
-        return response(res, true, 'Get All Products Success', results, 200, { totalData, page, limit })
+        return response(res, true, 'Get All Products Success', results, 200, pagination)
       }
       return response(res, false, 'Sorry.. Products Not Found', [], 404)
     } catch (error) {
