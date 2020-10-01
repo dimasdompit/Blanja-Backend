@@ -3,6 +3,7 @@ const {
   queryGetAllProducts,
   queryGetProductDetails,
   queryGetProductsByUserId,
+  queryGetProductsByCategories,
   queryAddProducts,
   queryUpdateProducts,
   queryDeleteProducts,
@@ -53,6 +54,17 @@ module.exports = {
   getProductsByUserId: (id) => {
     return new Promise((resolve, reject) => {
       const sql = queryGetProductsByUserId()
+
+      connection.query(sql, id, (error, result) => {
+        if (error) reject(error)
+        resolve(result)
+      })
+    })
+  },
+
+  getProductsByCategories: (id) => {
+    return new Promise((resolve, reject) => {
+      const sql = queryGetProductsByCategories()
 
       connection.query(sql, id, (error, result) => {
         if (error) reject(error)

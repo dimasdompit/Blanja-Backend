@@ -8,6 +8,7 @@ const {
   getAllProductsModel,
   getProductDetailsModel,
   getProductsByUserId,
+  getProductsByCategories,
   addProductsModel,
   updateProductsModel,
   deleteProductsModel
@@ -107,6 +108,22 @@ module.exports = {
         return response(res, false, `Product with ID = ${id} Not Found`, [], 404)
       }
       return response(res, false, 'Product Not Found', [], 404)
+    } catch (error) {
+      console.log(error)
+      return response(res, false, 'Internal Server Error', [], 500)
+    }
+  },
+
+  getProductsByCategories: async (req, res) => {
+    const id = req.params.id
+
+    try {
+      const result = await getProductsByCategories(id)
+
+      if (result[0]) {
+        return response(res, true, 'Get Products By Category Success', result, 200)
+      }
+      return response(res, false, `Product with Category ID = ${id} Not Found`, [], 404)
     } catch (error) {
       console.log(error)
       return response(res, false, 'Internal Server Error', [], 500)
