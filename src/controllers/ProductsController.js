@@ -6,6 +6,7 @@ const {
 const {
   totalProductsModel,
   getAllProductsModel,
+  getEveryProductsModel,
   getProductDetailsModel,
   getProductsByUserId,
   getProductsByCategories,
@@ -15,20 +16,19 @@ const {
 } = require('../models/products')
 const {
   // getAllProductImagesModel,
-  getProductImagesDetail,
-  insertProductImages,
-  updateProductImages,
-  deleteProductImages
+  getProductImagesByProductIdModel,
+  insertProductImagesModel,
+  updateProductImagesModel,
+  deleteProductImagesModel
 } = require('../models/product_images')
+const { getCategoriesDetailsModel } = require('../models/categories')
+const { getColorDetailsModel } = require('../models/colors')
+const { getConditionDetailsModel } = require('../models/conditions')
+const { getSizeDetailsModel } = require('../models/sizes')
 const fs = require('fs')
 
 module.exports = {
   getAllProducts: async (req, res) => {
-    const totalProducts = await totalProductsModel()
-    const spreadData = {
-      ...totalProducts
-    }
-    const totalData = spreadData['COUNT(*)']
 
     const search = req.query.search || ''
     const sort = req.query.sort || 'created_at'
@@ -36,11 +36,14 @@ module.exports = {
     const limit = parseInt(req.query.limit) || 10
     const page = parseInt(req.query.page) || 1
 
-    const totalPage = Math.ceil(totalData / limit)
-    const nextPage = (page + 1) <= totalPage ? (page + 1) : null
-    const previousPage = (page - 1) > 0 ? (page - 1) : null
-
     try {
+      const totalProducts = await totalProductsModel(search)
+      console.log(totalProducts)
+      const spreadData = {
+        ...totalProducts
+      }
+      const totalData = spreadData['COUNT(*)']
+
       const results = await getAllProductsModel(
         search,
         sort,
@@ -48,6 +51,12 @@ module.exports = {
         limit,
         page
       )
+
+      // const totalData = results.length
+
+      const totalPage = Math.ceil(totalData / limit)
+      const nextPage = (page + 1) <= totalPage ? (page + 1) : null
+      const previousPage = (page - 1) > 0 ? (page - 1) : null
 
       const pagination = {
         page: page,
@@ -69,21 +78,37 @@ module.exports = {
   },
 
   getProductDetails: async (req, res) => {
-    const id = req.params.id
+    const id = parseInt(req.params.id)
+
+    const getItem = async (productId) => {
+      const responseData = await getEveryProductsModel()
+      const product = responseData.find(item => item.id === productId)
+      return product
+    }
 
     try {
       const result = await getProductDetailsModel(id)
 
       if (result[0]) {
-        const productImages = await getProductImagesDetail(result[0].id)
+        const productImages = await getProductImagesByProductIdModel(result[0].id)
         const image = productImages.map((file) => {
           const filename = file.image
           return filename
         })
 
+        const product = await getItem(id)
+        const category = await getCategoriesDetailsModel(product.category_id)
+        const color = await getColorDetailsModel(product.color_id)
+        const conditionName = await getConditionDetailsModel(product.condition_id)
+        const size = await getSizeDetailsModel(product.size_id)
+
         const newResult = {
           ...result[0],
-          images: image
+          images: image,
+          category: category[0],
+          color: color[0],
+          condition_name: conditionName[0],
+          size: size[0]
         }
         return response(res, true, 'Get Product Success', newResult, 200)
       }
@@ -145,7 +170,7 @@ module.exports = {
             product_id: productId,
             image: file.filename
           }
-          await insertProductImages(dataImage)
+          await insertProductImagesModel(dataImage)
         })
       }
       if (req.fileValidationError) {
@@ -154,7 +179,7 @@ module.exports = {
 
       const validation = AddProductsValidation(data)
       if (validation.error === undefined) {
-        const getImage = await getProductImagesDetail(result.id)
+        const getImage = await getProductImagesByProductIdModel(result.id)
         const images = getImage.map((file) => {
           const filename = file.image
           return filename
@@ -186,7 +211,7 @@ module.exports = {
       const data = req.body
       const id = req.params.id
       let existImage = null
-      const oldImagesData = await getProductImagesDetail(id)
+      const oldImagesData = await getProductImagesByProductIdModel(id)
       if (req.files) {
         req.files.map(async (file, i) => {
           const imageId = oldImagesData[i].id
@@ -196,7 +221,7 @@ module.exports = {
             image: image
           }
           fs.unlinkSync(`./src/images/products/${existImage}`)
-          await updateProductImages(newImageData, imageId)
+          await updateProductImagesModel(newImageData, imageId)
         })
       }
       if (req.fileValidationError) {
@@ -207,7 +232,7 @@ module.exports = {
       if (validation.error === undefined) {
         const result = await updateProductsModel(data, id)
         if (result.id === id) {
-          const newImagesData = await getProductImagesDetail(id)
+          const newImagesData = await getProductImagesByProductIdModel(id)
           const imageProduct = {
             image: newImagesData[0].image
           }
@@ -238,13 +263,13 @@ module.exports = {
   deleteProducts: async (req, res) => {
     const id = req.params.id
     try {
-      const data = await getProductImagesDetail(id)
+      const data = await getProductImagesByProductIdModel(id)
       data.map((img, i) => {
         const image = img.image
         fs.unlinkSync(`./src/images/products/${image}`)
       })
       const result = await deleteProductsModel(id)
-      await deleteProductImages(id)
+      await deleteProductImagesModel(id)
       if (result.affectedRows === 1) {
         const newResult = {
           id: result.id

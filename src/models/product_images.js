@@ -13,9 +13,20 @@ module.exports = {
     })
   },
 
-  getProductImagesDetail: (productId) => {
+  getProductImagesDetails: (id) => {
     return new Promise((resolve, reject) => {
-      const sql = query.getProductImagesDetail
+      const sql = query.getProductImagesDetails
+
+      connection.query(sql, id, (error, result) => {
+        if (error) reject(error)
+        resolve(result)
+      })
+    })
+  },
+
+  getProductImagesByProductIdModel: (productId) => {
+    return new Promise((resolve, reject) => {
+      const sql = query.getProductImagesByProductId
 
       connection.query(sql, productId, (error, result) => {
         if (error) reject(error)
@@ -24,7 +35,7 @@ module.exports = {
     })
   },
 
-  insertProductImages: (data) => {
+  insertProductImagesModel: (data) => {
     return new Promise((resolve, reject) => {
       const sql = query.insertProductImages
 
@@ -40,15 +51,15 @@ module.exports = {
     })
   },
 
-  updateProductImages: (data, productId) => {
+  updateProductImagesModel: (data, id) => {
     return new Promise((resolve, reject) => {
       const sql = query.updateProductImages
 
-      connection.query(sql, [data, productId], (error, result) => {
+      connection.query(sql, [data, id], (error, result) => {
         if (error) reject(error)
 
         const newData = {
-          productId,
+          id,
           ...data
         }
         resolve(newData)
@@ -56,7 +67,7 @@ module.exports = {
     })
   },
 
-  deleteProductImages: (productId) => {
+  deleteProductImagesModel: (productId) => {
     return new Promise((resolve, reject) => {
       const sql = query.deleteProductImages
 
@@ -65,6 +76,22 @@ module.exports = {
 
         const newData = {
           productId,
+          ...result
+        }
+        resolve(newData)
+      })
+    })
+  },
+
+  deleteProductImagesByIdModel: (id) => {
+    return new Promise((resolve, reject) => {
+      const sql = query.deleteProductImagesById
+
+      connection.query(sql, id, (error, result) => {
+        if (error) reject(error)
+
+        const newData = {
+          id,
           ...result
         }
         resolve(newData)

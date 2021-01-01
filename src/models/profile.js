@@ -2,6 +2,17 @@ const connection = require('../config/database')
 const query = require('../helpers/query/profile')
 
 module.exports = {
+  getUserByIdModel: (id) => {
+    return new Promise((resolve, reject) => {
+      const sql = query.getUserById
+
+      connection.query(sql, id, (error, result) => {
+        if (error) reject(error)
+        resolve(result)
+      })
+    })
+  },
+
   editUserModel: (data, id) => {
     return new Promise((resolve, reject) => {
       const sql = query.editUser

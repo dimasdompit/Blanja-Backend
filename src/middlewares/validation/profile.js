@@ -10,8 +10,7 @@ const schema = {
       .min(min)
       .message(`"date" cannot be earlier than ${min}`)
       .max('now')
-      .message('"date" cannot be later than now')
-      .required(),
+      .message('"date" cannot be later than now'),
     image: joi.string(),
     store: joi.string(),
     telp: joi.string()

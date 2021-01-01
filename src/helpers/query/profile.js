@@ -1,4 +1,5 @@
 module.exports = {
+  getUserById: 'SELECT * FROM users WHERE id = ?',
   editUser: 'UPDATE users SET ? WHERE id = ?',
   getData: 'SELECT * FROM users where id = ?',
   addAddress: 'INSERT INTO address SET ?',

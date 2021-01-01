@@ -18,7 +18,7 @@ module.exports = {
     })
 
     const mailOptions = {
-      from: 'dimasdoms@gmail.com',
+      from: process.env.USER_EMAIL,
       to: data.email,
       subject: type,
       html: mustache.render(templateEmail, data)

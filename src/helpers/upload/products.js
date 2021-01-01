@@ -6,9 +6,14 @@ const storage = multer.diskStorage({
   },
   filename: (req, file, callback) => {
     const splitName = file.originalname.split('.')
-    const productName = req.body.product_name.split(' ').join('-')
     const ext = splitName.pop()
-    callback(null, `${productName}-${Date.now()}.${ext}`)
+    if (req.body.product_name) {
+      const productName = req.body.product_name.split(' ').join('-')
+      callback(null, `${productName}-${Date.now()}.${ext}`)
+    } else {
+      const productId = req.body.product_id
+      callback(null, `${productId}-${Date.now()}.${ext}`)
+    }
   }
 })
 

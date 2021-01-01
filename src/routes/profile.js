@@ -1,6 +1,7 @@
 const express = require('express')
 const router = express.Router()
 const {
+  getUserById,
   editProfile,
   addMyAddress,
   editMyAddress,
@@ -11,6 +12,7 @@ const {
 const tokenCheck = require('../middlewares/TokenCheck')
 const ImageFilter = require('../middlewares/ImageFilterUsers')
 
+router.get('/', tokenCheck, getUserById)
 router.put('/', tokenCheck, ImageFilter, editProfile)
 router.post('/my-address', tokenCheck, addMyAddress)
 router.put('/my-address/:id', tokenCheck, editMyAddress)

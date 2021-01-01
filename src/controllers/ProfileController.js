@@ -6,6 +6,7 @@ const {
   EditAddressValidation
 } = require('../helpers/validation')
 const {
+  getUserByIdModel,
   editUserModel,
   getUserModel,
   addAddressModel,
@@ -17,13 +18,28 @@ const {
 const fs = require('fs')
 
 module.exports = {
+  getUserById: async (req, res) => {
+    const id = req.decoded.result[0].id
+
+    try {
+      const result = await getUserByIdModel(id)
+
+      if (result[0]) {
+        delete result[0].password
+        return response(res, true, 'Get User By ID Success', result[0], 200)
+      }
+      return response(res, true, 'User Not Found', [], 404)
+    } catch (error) {
+      console.log(error)
+      return response(res, false, 'Internal Server Error', [], 500)
+    }
+  },
+
   editProfile: async (req, res) => {
     try {
       const id = req.decoded.result[0].id
       const data = req.body
-      req.body.password
-        ? (req.body.password = hashSync(req.body.password, genSalt(1)))
-        : null
+      req.body.password ? (req.body.password = hashSync(req.body.password, genSalt(1))) : null
       const getUser = await getUserModel(id)
       const oldImage = getUser[0].image
 

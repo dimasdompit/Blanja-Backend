@@ -1,6 +1,7 @@
 const connection = require('../config/database')
 const {
   queryGetAllProducts,
+  queryGetEveryProducts,
   queryGetProductDetails,
   queryGetProductsByUserId,
   queryGetProductsByCategories,
@@ -11,11 +12,12 @@ const {
 } = require('../helpers/query/products')
 
 module.exports = {
-  totalProductsModel: () => {
+  totalProductsModel: (search) => {
+    const keyword = `%${search}%`
     return new Promise((resolve, reject) => {
       const sql = queryTotalProducts()
 
-      connection.query(sql, (error, result) => {
+      connection.query(sql, keyword, (error, result) => {
         if (error) reject(error)
         resolve(...result)
       })
@@ -37,6 +39,17 @@ module.exports = {
           resolve(result)
         }
       )
+    })
+  },
+
+  getEveryProductsModel: () => {
+    return new Promise((resolve, reject) => {
+      const sql = queryGetEveryProducts()
+
+      connection.query(sql, (error, result) => {
+        if (error) reject(error)
+        resolve(result)
+      })
     })
   },
 
